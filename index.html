@@ -392,7 +392,7 @@
     const money = (value) => `AED ${Math.round(value).toLocaleString('en-AE')}`;
 
     function updatePlan() {
-      const budget = Math.min(10000, Math.max(100, Number(budgetRange.value) || 1000));
+      const budget = Math.min(400, Math.max(5, Number(budgetRange.value) || 40));
       const save = Number(saveRange.value);
       const fun = Number(funRange.value);
       const needs = Math.max(0, 100 - save - fun);
