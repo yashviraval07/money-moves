@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Money Moves is a simple financial literacy demo for learning to plan, save, and spend with confidence.">
+  <title>Money Moves — a tiny financial literacy lab</title>
+  <style>
+    :root {
+      --ink: #153243;
+      --ink-soft: #506470;
+      --paper: #f7f3ea;
+      --paper-deep: #ece6d8;
+      --white: #fffdf8;
+      --coral: #f2694a;
+      --coral-dark: #d95033;
+      --sun: #f7bd45;
+      --teal: #2f9d92;
+      --line: rgba(21, 50, 67, .16);
+      --shadow: 0 18px 45px rgba(21, 50, 67, .12);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .site-shell { overflow: hidden; }
+    .container { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 0;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -.04em; }
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      color: var(--white);
+      background: var(--ink);
+      border-radius: 11px 11px 11px 4px;
+      font-size: 17px;
+      transform: rotate(-5deg);
+    }
+    .brand span:last-child { font-size: 18px; }
+    .nav { display: flex; align-items: center; gap: 27px; color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+    .nav a { transition: color .18s ease; }
+    .nav a:hover, .nav a:focus-visible { color: var(--coral-dark); }
+    .nav-cta {
+      padding: 11px 16px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      color: var(--ink);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 800;
+      transition: color .18s ease, background .18s ease, transform .18s ease;
+    }
+    .nav-cta:hover, .nav-cta:focus-visible { color: var(--white); background: var(--ink); transform: translateY(-2px); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(380px, .98fr);
+      align-items: center;
+      gap: clamp(44px, 7vw, 96px);
+      min-height: 600px;
+      padding: 56px 0 75px;
+    }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--coral-dark); font-size: 12px; font-weight: 900; letter-spacing: .13em; }
+    .eyebrow::before { width: 8px; height: 8px; background: var(--coral); border-radius: 50%; content: ""; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 650px;
+      margin-bottom: 23px;
+      font-size: clamp(3.5rem, 7vw, 6.3rem);
+      line-height: .93;
+      letter-spacing: -.085em;
+    }
+    .hero-copy > p { max-width: 520px; margin-bottom: 31px; color: var(--ink-soft); font-size: 18px; }
+    .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .primary-button, .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 50px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 900;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .primary-button { color: var(--white); background: var(--coral); box-shadow: 0 9px 0 #bd4931; }
+    .primary-button:hover, .primary-button:focus-visible { background: var(--coral-dark); box-shadow: 0 5px 0 #bd4931; transform: translateY(4px); }
+    .secondary-button { color: var(--ink); background: transparent; border: 1px solid var(--line); }
+    .secondary-button:hover, .secondary-button:focus-visible { background: var(--white); transform: translateY(-2px); }
+    .arrow { font-size: 19px; line-height: 0; }
+
+    .hero-visual { position: relative; min-height: 470px; }
+    .hero-visual::before { position: absolute; inset: 12% 2% 5% 8%; border-radius: 44% 56% 52% 48% / 55% 40% 60% 45%; background: #e7ded0; content: ""; transform: rotate(-7deg); }
+    .snapshot {
+      position: absolute;
+      inset: 33px 21px 18px 36px;
+      padding: 30px 29px;
+      color: var(--white);
+      background: var(--ink);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      transform: rotate(3deg);
+    }
+    .snapshot-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 44px; }
+    .snapshot-label { color: rgba(255,253,248,.65); font-size: 11px; font-weight: 900; letter-spacing: .14em; }
+    .spark { display: grid; width: 34px; height: 34px; place-items: center; color: var(--ink); background: var(--sun); border-radius: 50%; font-size: 18px; }
+    .snapshot h2 { max-width: 330px; margin-bottom: 26px; font-size: 36px; line-height: 1.02; letter-spacing: -.06em; }
+    .money-total { display: flex; align-items: baseline; gap: 7px; margin-bottom: 26px; }
+    .money-total strong { font-size: 52px; line-height: 1; letter-spacing: -.07em; }
+    .money-total span { color: rgba(255,253,248,.66); font-size: 13px; font-weight: 800; }
+    .snapshot-bars { display: grid; gap: 16px; }
+    .snapshot-row { display: grid; grid-template-columns: 96px 1fr 39px; align-items: center; gap: 12px; font-size: 12px; font-weight: 800; }
+    .snapshot-row .bar { height: 8px; overflow: hidden; background: rgba(255,255,255,.12); border-radius: 999px; }
+    .snapshot-row .bar i { display: block; height: 100%; border-radius: inherit; }
+    .snapshot-row:nth-child(1) .bar i { width: 50%; background: var(--coral); }
+    .snapshot-row:nth-child(2) .bar i { width: 25%; background: var(--sun); }
+    .snapshot-row:nth-child(3) .bar i { width: 25%; background: var(--teal); }
+    .snapshot-row em { color: rgba(255,253,248,.7); font-size: 11px; font-style: normal; text-align: right; }
+    .sticker { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: 7px; padding: 11px 14px; color: var(--ink); border: 2px solid var(--ink); border-radius: 9px 17px 14px 17px; font-size: 12px; font-weight: 900; box-shadow: 4px 5px 0 rgba(21,50,67,.12); }
+    .sticker-save { top: 24px; right: 8px; background: var(--sun); transform: rotate(7deg); }
+    .sticker-choice { right: 5px; bottom: 36px; background: var(--white); transform: rotate(-6deg); }
+    .sticker-dot { width: 8px; height: 8px; background: var(--coral); border-radius: 50%; }
+
+    .lesson-strip { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .lesson-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .lesson-step { display: flex; gap: 18px; padding: 27px 22px 30px 0; }
+    .lesson-step + .lesson-step { padding-left: 30px; border-left: 1px solid var(--line); }
+    .lesson-number { color: var(--coral); font-size: 13px; font-weight: 900; letter-spacing: .08em; }
+    .lesson-step h3 { margin-bottom: 5px; font-size: 17px; letter-spacing: -.03em; }
+    .lesson-step p { margin-bottom: 0; color: var(--ink-soft); font-size: 13px; }
+
+    .lab-section { padding: 115px 0 126px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 41px; }
+    .section-heading h2 { max-width: 545px; margin-bottom: 0; font-size: clamp(2.5rem, 5vw, 4.4rem); line-height: .96; letter-spacing: -.08em; }
+    .section-heading p { max-width: 315px; margin-bottom: 4px; color: var(--ink-soft); font-size: 15px; }
+
+    .lab-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr); gap: 24px; align-items: stretch; }
+    .panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); }
+    .planner { padding: clamp(25px, 4vw, 40px); }
+    .panel-kicker { margin-bottom: 8px; color: var(--coral-dark); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+    .planner h3, .quiz h3 { margin-bottom: 9px; font-size: 28px; line-height: 1; letter-spacing: -.06em; }
+    .panel-intro { max-width: 420px; margin-bottom: 28px; color: var(--ink-soft); font-size: 14px; }
+    .total-line { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 27px; }
+    .total-line label { display: grid; gap: 5px; color: var(--ink-soft); font-size: 12px; font-weight: 800; }
+    .total-line input[type="number"] { width: 136px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--paper); font-size: 17px; font-weight: 900; outline: none; }
+    .total-line input[type="number"]:focus { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(242,105,74,.14); }
+    .budget-readout { text-align: right; }
+    .budget-readout strong { display: block; font-size: 33px; line-height: 1; letter-spacing: -.06em; }
+    .budget-readout span { color: var(--ink-soft); font-size: 11px; font-weight: 700; }
+    .range-group { display: grid; gap: 20px; }
+    .range-line { display: grid; gap: 7px; }
+    .range-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 800; }
+    .range-label output { color: var(--coral-dark); }
+    input[type="range"] { width: 100%; height: 6px; accent-color: var(--coral); cursor: pointer; }
+    .range-help { margin-top: -2px; color: var(--ink-soft); font-size: 11px; }
+    .plan-summary { display: grid; grid-template-columns: minmax(145px, .62fr) 1fr; gap: 26px; align-items: center; margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line); }
+    .donut { position: relative; display: grid; width: 150px; height: 150px; place-items: center; border-radius: 50%; background: conic-gradient(var(--coral) 0 50%, var(--sun) 50% 75%, var(--teal) 75% 100%); }
+    .donut::after { width: 90px; height: 90px; border-radius: 50%; background: var(--white); content: ""; }
+    .donut-center { position: absolute; z-index: 1; text-align: center; }
+    .donut-center strong { display: block; font-size: 24px; line-height: 1; letter-spacing: -.06em; }
+    .donut-center span { color: var(--ink-soft); font-size: 10px; font-weight: 800; }
+    .legend { display: grid; gap: 11px; }
+    .legend-row { display: grid; grid-template-columns: 10px 1fr auto; align-items: center; gap: 9px; font-size: 12px; font-weight: 800; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 4px; }
+    .legend-row:nth-child(1) .legend-dot { background: var(--coral); }
+    .legend-row:nth-child(2) .legend-dot { background: var(--sun); }
+    .legend-row:nth-child(3) .legend-dot { background: var(--teal); }
+    .legend-row em { color: var(--ink-soft); font-size: 11px; font-style: normal; }
+    .planner-note { margin: 23px 0 0; padding: 12px 14px; border-left: 3px solid var(--teal); color: var(--ink-soft); background: #eef7f4; font-size: 12px; }
+
+    .quiz { display: flex; flex-direction: column; padding: clamp(25px, 4vw, 40px); color: var(--white); background: var(--ink); }
+    .quiz .panel-kicker { color: var(--sun); }
+    .quiz .panel-intro { color: rgba(255,253,248,.65); }
+    .quiz-progress { display: flex; align-items: center; gap: 11px; margin: 10px 0 23px; color: rgba(255,253,248,.62); font-size: 11px; font-weight: 800; }
+    .progress-track { flex: 1; height: 5px; overflow: hidden; background: rgba(255,255,255,.14); border-radius: 999px; }
+    .progress-track i { display: block; width: 33%; height: 100%; background: var(--sun); border-radius: inherit; transition: width .25s ease; }
+    .quiz-question { min-height: 85px; margin-bottom: 19px; font-size: 21px; font-weight: 800; line-height: 1.16; letter-spacing: -.04em; }
+    .answer-list { display: grid; gap: 10px; }
+    .answer { width: 100%; padding: 13px 14px; border: 1px solid rgba(255,255,255,.2); border-radius: 12px; color: var(--white); background: transparent; text-align: left; font-size: 13px; font-weight: 700; transition: background .18s ease, border .18s ease, transform .18s ease; }
+    .answer:hover, .answer:focus-visible { border-color: var(--sun); background: rgba(247,189,69,.12); transform: translateX(3px); }
+    .answer.correct { border-color: var(--teal); background: rgba(47,157,146,.2); }
+    .answer.wrong { border-color: var(--coral); background: rgba(242,105,74,.2); }
+    .answer:disabled { cursor: default; }
+    .quiz-result { min-height: 40px; margin-top: 18px; color: rgba(255,253,248,.76); font-size: 12px; }
+    .quiz-result strong { color: var(--sun); }
+    .next-question { align-self: start; margin-top: auto; padding: 10px 14px; border: 0; border-radius: 10px; color: var(--ink); background: var(--sun); font-size: 12px; font-weight: 900; transition: transform .18s ease, background .18s ease; }
+    .next-question:hover, .next-question:focus-visible { background: #ffd37a; transform: translateY(-2px); }
+
+    .closing { padding: 74px 0 88px; color: var(--white); background: var(--coral); }
+    .closing-grid { display: grid; grid-template-columns: 1fr .8fr; align-items: end; gap: 40px; }
+    .closing h2 { max-width: 680px; margin-bottom: 0; font-size: clamp(2.8rem, 6vw, 5.5rem); line-height: .92; letter-spacing: -.085em; }
+    .closing-copy { max-width: 280px; color: rgba(255,255,255,.82); font-size: 14px; }
+    .closing-copy strong { display: block; margin-bottom: 10px; color: var(--white); font-size: 17px; }
+    footer { padding: 22px 0 27px; color: var(--ink-soft); font-size: 12px; }
+    .footer-line { display: flex; justify-content: space-between; gap: 20px; }
+
+    :focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
+    @media (max-width: 840px) {
+      .hero { grid-template-columns: 1fr; padding-top: 30px; }
+      .hero-visual { min-height: 400px; max-width: 600px; width: 100%; margin: 0 auto; }
+      .snapshot { inset: 25px 35px 14px 20px; }
+      .lab-grid { grid-template-columns: 1fr; }
+      .closing-grid { grid-template-columns: 1fr; }
+      .closing-copy { max-width: 520px; }
+    }
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1160px); }
+      .topbar { padding: 17px 0; }
+      .nav { gap: 12px; }
+      .nav a { display: none; }
+      .nav-cta { padding: 9px 12px; }
+      .hero { min-height: auto; padding: 58px 0 68px; }
+      h1 { font-size: clamp(3.1rem, 16vw, 5rem); }
+      .hero-copy > p { font-size: 16px; }
+      .hero-visual { min-height: 355px; }
+      .snapshot { inset: 24px 12px 18px 12px; padding: 25px 21px; }
+      .snapshot h2 { font-size: 30px; }
+      .snapshot-top { margin-bottom: 28px; }
+      .sticker-save { right: 0; }
+      .sticker-choice { right: -3px; bottom: 16px; }
+      .lesson-grid { grid-template-columns: 1fr; }
+      .lesson-step, .lesson-step + .lesson-step { padding: 21px 0; border-left: 0; border-bottom: 1px solid var(--line); }
+      .lesson-step:last-child { border-bottom: 0; }
+      .lab-section { padding: 77px 0 82px; }
+      .section-heading { display: block; margin-bottom: 30px; }
+      .section-heading p { margin-top: 18px; }
+      .plan-summary { grid-template-columns: 1fr; justify-items: center; }
+      .legend { width: 100%; }
+      .donut { width: 135px; height: 135px; }
+      .closing { padding: 64px 0 71px; }
+      .footer-line { display: block; }
+      .footer-line span { display: block; margin-top: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="container topbar">
+      <a class="brand" href="#top" aria-label="Money Moves home">
+        <span class="brand-mark">M</span><span>money moves</span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="#money-lab">Money lab</a>
+        <a class="nav-cta" href="#quiz">Take the quiz <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="container hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">financial literacy · level 01</div>
+          <h1 id="hero-title">Make every rupee do a job.</h1>
+          <p>Money feels less confusing when you give it a simple plan. Learn the basics, try a tiny money lab, and make choices that match what matters to you.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#money-lab">Try the money lab <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="secondary-button" href="#how-it-works">See the basics</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="An example money plan showing how one thousand rupees can be shared between needs, fun, and savings.">
+          <div class="sticker sticker-save"><span class="sticker-dot"></span> save a little</div>
+          <div class="snapshot">
+            <div class="snapshot-top"><span class="snapshot-label">TODAY'S MONEY SNAPSHOT</span><span class="spark" aria-hidden="true">✦</span></div>
+            <h2>A plan gives your money a direction.</h2>
+            <div class="money-total"><strong>₹1,000</strong><span>to plan</span></div>
+            <div class="snapshot-bars" aria-hidden="true">
+              <div class="snapshot-row"><span>needs</span><span class="bar"><i></i></span><em>50%</em></div>
+              <div class="snapshot-row"><span>wants</span><span class="bar"><i></i></span><em>25%</em></div>
+              <div class="snapshot-row"><span>future you</span><span class="bar"><i></i></span><em>25%</em></div>
+            </div>
+          </div>
+          <div class="sticker sticker-choice"><span class="sticker-dot" style="background:var(--teal)"></span> small steps count</div>
+        </div>
+      </section>
+
+      <section class="lesson-strip" id="how-it-works" aria-label="What you will learn">
+        <div class="container lesson-grid">
+          <div class="lesson-step"><span class="lesson-number">01</span><div><h3>Learn the language</h3><p>Needs, wants, saving, and goals — in plain words.</p></div></div>
+          <div class="lesson-step"><span class="lesson-number">02</span><div><h3>Make a tiny plan</h3><p>Move the sliders and see where your money could go.</p></div></div>
+          <div class="lesson-step"><span class="lesson-number">03</span><div><h3>Choose with confidence</h3><p>Practice spotting smart money moves in everyday life.</p></div></div>
+        </div>
+      </section>
+
+      <section class="container lab-section" id="money-lab" aria-labelledby="lab-title">
+        <div class="section-heading">
+          <h2 id="lab-title">Your money, your map.</h2>
+          <p>There is no perfect split. Change the plan until it feels realistic for you.</p>
+        </div>
+        <div class="lab-grid">
+          <section class="panel planner" aria-labelledby="planner-title">
+            <div class="panel-kicker">INTERACTIVE TOOL</div>
+            <h3 id="planner-title">Build a simple plan</h3>
+            <p class="panel-intro">Start with an amount you might receive, then choose how much to save and spend on fun. Needs get the rest.</p>
+            <div class="total-line">
+              <label for="budget-number">Money to plan
+                <input id="budget-number" type="number" min="100" max="10000" step="100" value="1000" inputmode="numeric" aria-describedby="budget-caption">
+              </label>
+              <div class="budget-readout"><strong id="budget-caption">₹1,000</strong><span>your starting amount</span></div>
+            </div>
+            <div class="range-group">
+              <div class="range-line">
+                <div class="range-label"><span>Save for a goal</span><output id="save-output" for="save-range">25%</output></div>
+                <input id="save-range" type="range" min="5" max="60" value="25" aria-label="Percentage to save for a goal">
+                <div class="range-help">Future you says thanks.</div>
+              </div>
+              <div class="range-line">
+                <div class="range-label"><span>Spend on wants</span><output id="fun-output" for="fun-range">25%</output></div>
+                <input id="fun-range" type="range" min="5" max="60" value="25" aria-label="Percentage to spend on wants">
+                <div class="range-help">Fun belongs in a plan too.</div>
+              </div>
+            </div>
+            <div class="plan-summary">
+              <div class="donut" id="donut" role="img" aria-label="Budget split chart">
+                <div class="donut-center"><strong id="needs-percent">50%</strong><span>for needs</span></div>
+              </div>
+              <div class="legend" aria-live="polite">
+                <div class="legend-row"><span class="legend-dot"></span><span>Needs</span><em id="needs-amount">₹500</em></div>
+                <div class="legend-row"><span class="legend-dot"></span><span>Wants</span><em id="fun-amount">₹250</em></div>
+                <div class="legend-row"><span class="legend-dot"></span><span>Save</span><em id="save-amount">₹250</em></div>
+              </div>
+            </div>
+            <p class="planner-note" id="planner-note">Nice balance. You are giving today and tomorrow a job.</p>
+          </section>
+
+          <section class="panel quiz" id="quiz" aria-labelledby="quiz-title">
+            <div class="panel-kicker">QUICK CHECK</div>
+            <h3 id="quiz-title">Can you spot the smart move?</h3>
+            <p class="panel-intro">Three quick questions. No grades — just a chance to notice what you already know.</p>
+            <div class="quiz-progress"><span id="quiz-count">1 of 3</span><span class="progress-track"><i id="quiz-progress"></i></span></div>
+            <div class="quiz-question" id="quiz-question"></div>
+            <div class="answer-list" id="answer-list"></div>
+            <div class="quiz-result" id="quiz-result" aria-live="polite"></div>
+            <button class="next-question" id="next-question" type="button" hidden>Next question <span aria-hidden="true">→</span></button>
+          </section>
+        </div>
+      </section>
+
+      <section class="closing" aria-label="Closing message">
+        <div class="container closing-grid">
+          <h2>Small choices. Bigger possibilities.</h2>
+          <p class="closing-copy"><strong>Keep going.</strong> Every plan you try is practice for the real world — and progress does not have to be perfect.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-line"><span>money moves · learn it, try it, grow it</span><span>made by Yashvi Raval</span></div>
+    </footer>
+  </div>
+
+  <script>
+    const budgetRange = document.getElementById('budget-number');
+    const saveRange = document.getElementById('save-range');
+    const funRange = document.getElementById('fun-range');
+    const budgetCaption = document.getElementById('budget-caption');
+    const saveOutput = document.getElementById('save-output');
+    const funOutput = document.getElementById('fun-output');
+    const needsPercent = document.getElementById('needs-percent');
+    const needsAmount = document.getElementById('needs-amount');
+    const funAmount = document.getElementById('fun-amount');
+    const saveAmount = document.getElementById('save-amount');
+    const donut = document.getElementById('donut');
+    const plannerNote = document.getElementById('planner-note');
+
+    const money = (value) => `₹${Math.round(value).toLocaleString('en-IN')}`;
+
+    function updatePlan() {
+      const budget = Math.min(10000, Math.max(100, Number(budgetRange.value) || 1000));
+      const save = Number(saveRange.value);
+      const fun = Number(funRange.value);
+      const needs = Math.max(0, 100 - save - fun);
+      const saveValue = budget * save / 100;
+      const funValue = budget * fun / 100;
+      const needsValue = budget * needs / 100;
+
+      budgetRange.value = budget;
+      budgetCaption.textContent = money(budget);
+      saveOutput.textContent = `${save}%`;
+      funOutput.textContent = `${fun}%`;
+      needsPercent.textContent = `${needs}%`;
+      needsAmount.textContent = money(needsValue);
+      funAmount.textContent = money(funValue);
+      saveAmount.textContent = money(saveValue);
+      donut.style.background = `conic-gradient(var(--coral) 0 ${needs}%, var(--sun) ${needs}% ${needs + fun}%, var(--teal) ${needs + fun}% 100%)`;
+
+      if (needs < 25) {
+        plannerNote.textContent = 'That is a bold plan. Check that your everyday needs still have enough room.';
+      } else if (save >= 30) {
+        plannerNote.textContent = 'You are building a strong cushion. Make sure the plan still leaves room for today.';
+      } else if (save >= 20 && fun >= 15) {
+        plannerNote.textContent = 'Nice balance. You are giving today and tomorrow a job.';
+      } else {
+        plannerNote.textContent = 'Try changing one slider at a time and notice how each choice changes the plan.';
+      }
+    }
+
+    [budgetRange, saveRange, funRange].forEach((control) => control.addEventListener('input', updatePlan));
+    updatePlan();
+
+    const quizQuestions = [
+      {
+        question: 'You get ₹500. Which choice is a “need”?',
+        answers: ['A new game skin', 'A bus ride to school', 'A second dessert'],
+        correct: 1,
+        explanation: 'A need is something important for everyday life, like getting safely to school.'
+      },
+      {
+        question: 'What is a good reason to save a little money?',
+        answers: ['To make a future goal easier', 'To never spend any money', 'To make money disappear'],
+        correct: 0,
+        explanation: 'Saving turns a big future goal into smaller steps you can actually take.'
+      },
+      {
+        question: 'Before buying something, what is a smart question to ask?',
+        answers: ['Will everyone like this?', 'Do I still want it tomorrow?', 'Is it the most expensive option?'],
+        correct: 1,
+        explanation: 'A pause helps you decide if something is a real priority or just an impulse.'
+      }
+    ];
+    let currentQuestion = 0;
+    let score = 0;
+    const quizQuestion = document.getElementById('quiz-question');
+    const answerList = document.getElementById('answer-list');
+    const quizResult = document.getElementById('quiz-result');
+    const quizCount = document.getElementById('quiz-count');
+    const quizProgress = document.getElementById('quiz-progress');
+    const nextQuestion = document.getElementById('next-question');
+
+    function renderQuestion() {
+      const item = quizQuestions[currentQuestion];
+      quizCount.textContent = `${currentQuestion + 1} of ${quizQuestions.length}`;
+      quizProgress.style.width = `${((currentQuestion + 1) / quizQuestions.length) * 100}%`;
+      quizQuestion.textContent = item.question;
+      quizResult.textContent = '';
+      nextQuestion.hidden = true;
+      answerList.innerHTML = '';
+      item.answers.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.className = 'answer';
+        button.type = 'button';
+        button.textContent = answer;
+        button.addEventListener('click', () => chooseAnswer(index, button));
+        answerList.appendChild(button);
+      });
+    }
+
+    function chooseAnswer(index, selectedButton) {
+      const item = quizQuestions[currentQuestion];
+      const answers = [...answerList.querySelectorAll('.answer')];
+      answers.forEach((button) => { button.disabled = true; });
+      answers[item.correct].classList.add('correct');
+      if (index === item.correct) {
+        score += 1;
+        quizResult.innerHTML = `<strong>Yes!</strong> ${item.explanation}`;
+      } else {
+        selectedButton.classList.add('wrong');
+        quizResult.innerHTML = `<strong>Good try.</strong> ${item.explanation}`;
+      }
+      nextQuestion.hidden = false;
+      nextQuestion.textContent = currentQuestion === quizQuestions.length - 1 ? 'See your result →' : 'Next question →';
+    }
+
+    nextQuestion.addEventListener('click', () => {
+      if (currentQuestion === quizQuestions.length - 1) {
+        quizQuestion.textContent = `You scored ${score} out of ${quizQuestions.length}.`;
+        answerList.innerHTML = '';
+        quizResult.innerHTML = score === quizQuestions.length ? '<strong>Perfect round.</strong> You are ready to keep making smart moves.' : '<strong>Nice work.</strong> Every question is another step toward feeling confident.';
+        nextQuestion.hidden = true;
+        quizCount.textContent = 'complete';
+        quizProgress.style.width = '100%';
+        return;
+      }
+      currentQuestion += 1;
+      renderQuestion();
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>
